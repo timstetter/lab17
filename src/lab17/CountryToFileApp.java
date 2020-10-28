@@ -16,7 +16,7 @@ import java.util.Scanner;
 public class CountryToFileApp {
 
 	private static Path filePath = Paths.get("countries.txt");
-	private static Path binaryFilePath = Paths.get("countries.dat");
+	
 
 	public static void main(String[] args) {
 		Scanner scnr = new Scanner(System.in);
