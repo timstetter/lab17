@@ -1,6 +1,9 @@
 package lab17;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -13,6 +16,7 @@ import java.util.Scanner;
 public class CountryToFileApp {
 
 	private static Path filePath = Paths.get("countries.txt");
+	private static Path binaryFilePath = Paths.get("countries.dat");
 
 	public static void main(String[] args) {
 		Scanner scnr = new Scanner(System.in);
@@ -60,6 +64,8 @@ public class CountryToFileApp {
 				System.out.println("Invalid option.");
 			}
 		}
+		
+		textToFileBinary();
 		System.out.println("Thanks for using the Country List App!");
 		scnr.close();
 
@@ -101,5 +107,17 @@ public class CountryToFileApp {
 			System.out.println("Unable to write to file.");
 		}
 	}
+	public static void textToFileBinary() {		
+		File file = new File("countries.dat");
+		try {
+			byte[] allbytes = Files.readAllBytes(filePath);
+			FileOutputStream fos = new FileOutputStream(file);
+			fos.write(allbytes);
+			fos.close();
+		} catch (IOException e) {
+			System.out.println("Unable to write to file.");
+		}
+	}
+	
 
 }
