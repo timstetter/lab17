@@ -3,7 +3,6 @@ package lab17;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -18,8 +17,7 @@ import java.util.Scanner;
 
 public class CountryToFileApp {
 
-	private static Path filePath = Paths.get("countries.txt");
-	
+	private static Path filePath = Paths.get("countries.txt");	
 
 	public static void main(String[] args) {
 		Scanner scnr = new Scanner(System.in);
@@ -136,9 +134,11 @@ public class CountryToFileApp {
 		String currentLine;
 
 		while((currentLine = reader.readLine()) != null) {
-		    // trim newline when comparing with lineToRemove
+		    
 		    String trimmedLine = currentLine.trim();
+		    
 		    if(trimmedLine.startsWith(lineToRemove)) continue;
+		    
 		    writer.write(currentLine + System.getProperty("line.separator"));
 		}
 		writer.close(); 
