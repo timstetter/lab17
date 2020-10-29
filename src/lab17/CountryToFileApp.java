@@ -1,9 +1,12 @@
 package lab17;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -27,15 +30,17 @@ public class CountryToFileApp {
 							 + "2 - Add a country\n" 
 							 + "3 - Sort countries alphabetically\n"
 							 + "4 - Sort countries by population (descending)\n"
-					         + "5 - Exit\n");
-			int option = Validator.getIntInRange(scnr, "Enter a menu number: ", 1, 5);
-			if (option == 5) {
+							 + "5 - Remove a country from the list\n"
+					         + "6 - Exit\n");
+			int option = Validator.getIntInRange(scnr, "Enter a menu number: ", 1, 6);
+			if (option == 6) {
 				break;
 			} else if (option == 1) {
 				List<Country> countries = readFile();
 				for (Country country : countries) {
 					System.out.println(country);
 				}
+				System.out.println();
 			} else if (option == 2) {
 				Country country = getThingFromUser(scnr);
 				System.out.println("Adding " + country);
@@ -50,22 +55,34 @@ public class CountryToFileApp {
 				for (Country country : countryList) {
 					System.out.println(country);
 				}
+				System.out.println();
 			} else if (option == 4) {
 				List<Country> countries = readFile();
 				ArrayList<Country> countryList = new ArrayList<Country>();
 				for (Country country : countries) {
 					countryList.add(country);
 				}
+				System.out.println();
 				Collections.sort(countryList, Country.countryPopComparator);
 				for (Country country : countryList) {
 					System.out.println(country);
 				}
+				System.out.println();
+			} else if (option == 5) {
+				String userInput = Validator.getString(scnr, "Please enter country to be removed: ");
+				System.out.println("Deleting: " + userInput + "\n");
+				removeLineFromFile(userInput);
+				List<Country> countries = readFile();
+				for (Country country : countries) {
+					System.out.println(country);
+				}
+				System.out.println();
 			} else {
 				System.out.println("Invalid option.");
 			}
 		}
 		
-		textToFileBinary();
+		
 		System.out.println("Thanks for using the Country List App!");
 		scnr.close();
 
@@ -107,17 +124,29 @@ public class CountryToFileApp {
 			System.out.println("Unable to write to file.");
 		}
 	}
-	public static void textToFileBinary() {		
-		File file = new File("countries.dat");
+	
+	public static void removeLineFromFile(String country) {
+		File inputFile = new File("countries.txt");
+		File tempFile = new File("myTempFile.txt");
 		try {
-			byte[] allbytes = Files.readAllBytes(filePath);
-			FileOutputStream fos = new FileOutputStream(file);
-			fos.write(allbytes);
-			fos.close();
+		BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+		BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
+
+		String lineToRemove = country;
+		String currentLine;
+
+		while((currentLine = reader.readLine()) != null) {
+		    // trim newline when comparing with lineToRemove
+		    String trimmedLine = currentLine.trim();
+		    if(trimmedLine.startsWith(lineToRemove)) continue;
+		    writer.write(currentLine + System.getProperty("line.separator"));
+		}
+		writer.close(); 
+		reader.close(); 
+		inputFile.delete();
+		tempFile.renameTo(inputFile);
 		} catch (IOException e) {
-			System.out.println("Unable to write to file.");
+			System.out.println("Couldn't remove country");
 		}
 	}
-	
-
 }
